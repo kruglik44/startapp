@@ -1,18 +1,37 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   public appPages = [
-    { title: 'Inbox', url: '/folder/Inbox', icon: 'mail' },
-    { title: 'Outbox', url: '/folder/Outbox', icon: 'paper-plane' },
-    { title: 'Favorites', url: '/folder/Favorites', icon: 'heart' },
-    { title: 'Archived', url: '/folder/Archived', icon: 'archive' },
-    { title: 'Trash', url: '/folder/Trash', icon: 'trash' },
-    { title: 'Spam', url: '/folder/Spam', icon: 'warning' },
+    { title: 'Профиль', url: 'profile', icon: 'person' },
+    { title: 'Закупки', url: 'purchases', icon: 'newspaper' },
+    
   ];
-  public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
-  constructor() {}
+  public labels = ['Андрей', 'Александр', 'Джордж', 'Димас', 'Андрей'];
+
+  public showSideMenu = false;
+  currentRoute: string;
+
+  constructor(private router: Router){}
+
+  ngOnInit(){
+    this.router.events
+      .pipe(filter(e => e instanceof NavigationEnd))
+      .subscribe((e: NavigationEnd) => {
+        this.currentRoute = e.url;
+        console.log(this.currentRoute);
+        if(this.currentRoute === '/login' || this.currentRoute === '/' || this.currentRoute === '/edit-profile'){
+          this.showSideMenu = false;
+        }
+        else {
+          this.showSideMenu = true;
+        }   
+    });
+  }
 }
+
